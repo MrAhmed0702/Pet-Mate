@@ -34,3 +34,5 @@ connectDB();
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+const petRoutes = require("./routes/petRoutes");
+app.use("/api/pets", petRoutes);
