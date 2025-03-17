@@ -5,7 +5,10 @@ import { logoutUser } from "./redux/slices/authSlice";
 import PetList from "./components/PetList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AppBar, Toolbar, Button, Typography } from "@mui/material";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminRoute from "./components/AdminRoute";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -45,6 +48,10 @@ const App = () => {
         <Route path="/" element={<PetList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+
+        {/* Protect Adoption Route */}
+        <Route path="/adopt" element={<ProtectedRoute><PetList /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

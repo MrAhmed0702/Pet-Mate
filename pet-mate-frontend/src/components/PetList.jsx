@@ -15,7 +15,7 @@ const PetList = () => {
 
   const handleAdopt = (petId) => {
     if (!user) {
-      alert("You need to log in first!");
+      alert("You must log in to adopt a pet!");
       return;
     }
     dispatch(requestAdoption({ petId, token }));
