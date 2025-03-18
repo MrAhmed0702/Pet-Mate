@@ -1,57 +1,29 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "./redux/slices/authSlice";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Navbar from "./components/Navbar";
 import PetList from "./components/PetList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminRoute from "./components/AdminRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+import UserProfile from "./pages/UserProfile";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   return (
     <Router>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Pet-Mate
-          </Typography>
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
-          {user ? (
-            <>
-              <Typography sx={{ marginRight: 2 }}>{user.name}</Typography>
-              <Button color="inherit" onClick={() => dispatch(logoutUser())}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button color="inherit" component={Link} to="/login">
-                Login
-              </Button>
-              <Button color="inherit" component={Link} to="/register">
-                Register
-              </Button>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-
+      <Navbar />
       <Routes>
-        <Route path="/" element={<PetList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-
-        {/* Protect Adoption Route */}
+        <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/adopt" element={<ProtectedRoute><PetList /></ProtectedRoute>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/pets" element={<PetList />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

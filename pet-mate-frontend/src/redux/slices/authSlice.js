@@ -48,7 +48,13 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.user = {
+          id: action.payload.user.id,
+          name: action.payload.user.name,
+          profilePicture: action.payload.user.profilePicture,
+          email: action.payload.user.email,
+          isAdmin: action.payload.user.isAdmin,
+        };        
         state.token = action.payload.token;
         state.error = null;
       })

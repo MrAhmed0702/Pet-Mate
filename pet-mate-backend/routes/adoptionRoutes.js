@@ -35,12 +35,33 @@ router.post("/", protect, async (req, res) => {
 // Get all adoption requests (Admin only)
 router.get("/", protect, isAdmin, async (req, res) => {
   try {
-    const requests = await Adoption.find().populate("user", "name email").populate("pet", "name species");
+    const requests = await Adoption.find()
+      .populate("user", "name email")
+      .populate("pet", "name species")
+      .lean();
+
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+// Get user's adoption requests (Pending + History)
+router.get("/user", protect, async (req, res) => {
+  try {
+    const requests = await Adoption.find({ user: req.user.id })
+      .populate("pet", "name species")
+      .lean();
+
+    const pendingRequests = requests.filter(r => r.status === "Pending");
+    const history = requests.filter(r => r.status !== "Pending"); // Approved/Rejected
+
+    res.json({ pendingRequests, history });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 // Approve or reject an adoption request (Admin only)
 router.put("/:id", protect, isAdmin, async (req, res) => {

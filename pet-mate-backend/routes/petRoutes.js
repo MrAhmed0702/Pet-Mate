@@ -1,13 +1,27 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const Pet = require("../models/Pet");
 const { protect, isAdmin } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage: storage });
+
 // Add a new pet (Admin only)
-router.post("/", protect, isAdmin, async (req, res) => {
+router.post("/", protect, isAdmin, upload.single("image"), async (req, res) => {
   try {
-    const { name, age, breed, species, description, image } = req.body;
+    const { name, age, breed, species, description } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : "";
 
     const newPet = new Pet({ name, age, breed, species, description, image });
     await newPet.save();
@@ -41,10 +55,25 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update a pet (Admin only)
-router.put("/:id", protect, isAdmin, async (req, res) => {
+router.put("/:id", protect, isAdmin, upload.single("image"), async (req, res) => {
   try {
-    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedPet) return res.status(404).json({ message: "Pet not found" });
+    const { name, age, breed, species, description } = req.body;
+    let image;
+    
+    const pet = await Pet.findById(req.params.id);
+    if (!pet) return res.status(404).json({ message: "Pet not found" });
+
+    if (req.file) {
+      image = `/uploads/${req.file.filename}`;
+    } else {
+      image = pet.image;
+    }
+
+    const updatedPet = await Pet.findByIdAndUpdate(
+      req.params.id,
+      { name, age, breed, species, description, image },
+      { new: true }
+    );
 
     res.json({ message: "Pet updated successfully!", pet: updatedPet });
   } catch (error) {

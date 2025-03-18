@@ -39,3 +39,8 @@ app.use("/api/pets", petRoutes);
 
 const adoptionRoutes = require("./routes/adoptionRoutes");
 app.use("/api/adoptions", adoptionRoutes);
+
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/users", userRoutes);
+
+app.use("/uploads", express.static("uploads"));
