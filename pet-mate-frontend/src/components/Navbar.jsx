@@ -41,7 +41,8 @@ const Navbar = () => {
         {user ? (
           <>
             <IconButton onClick={handleMenuOpen} sx={{ ml: 2 }}>
-              <Avatar src={`http://localhost:5000${user?.profilePicture}`} alt="Profile" />
+            <Avatar  src={`http://localhost:5000${user?.profilePicture}`}  alt="Profile" />
+              {console.log(user)}
             </IconButton>
 
             <Menu
@@ -49,6 +50,9 @@ const Navbar = () => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
+
+              <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold", fontFamily: "Robotics", fontSize: "20px" }}>{user?.name}</Typography>
+
               <MenuItem onClick={() => { handleMenuClose(); navigate("/profile"); }}>Profile</MenuItem>
               {user?.isAdmin && (
                 <MenuItem onClick={() => { handleMenuClose(); navigate("/admin"); }}>Dashboard</MenuItem>

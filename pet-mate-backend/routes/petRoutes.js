@@ -9,7 +9,7 @@ const router = express.Router();
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/PetProfileImage/");
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 router.post("/", protect, isAdmin, upload.single("image"), async (req, res) => {
   try {
     const { name, age, breed, species, description } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : "";
+    const image = req.file ? `/uploads/PetProfileImage/${req.file.filename}` : "";
 
     const newPet = new Pet({ name, age, breed, species, description, image });
     await newPet.save();

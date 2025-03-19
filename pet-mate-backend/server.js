@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const path = require("path");
 
 // Load environment variables
 dotenv.config();
@@ -43,4 +44,9 @@ app.use("/api/adoptions", adoptionRoutes);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
+  setHeaders: (res, path) => {
+    res.set("Access-Control-Allow-Origin", "*"); // Allow all origins
+    res.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS"); // Allow GET requests
+  },
+}));

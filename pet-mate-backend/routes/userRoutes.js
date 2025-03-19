@@ -25,7 +25,10 @@ router.put("/profile-picture", protect, upload.single("profilePicture"), async (
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.profilePicture = `/uploads/${req.file.filename}`;
+    // Determine correct image path
+    const folder = user.isAdmin ? "AdminImage" : "UserImage";
+    user.profilePicture = `/uploads/ProfileImage/${folder}/${req.file.filename}`;
+    
     await user.save();
 
     res.json({ message: "Profile picture updated successfully", profilePicture: user.profilePicture });

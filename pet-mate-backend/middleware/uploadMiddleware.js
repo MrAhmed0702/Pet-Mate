@@ -1,10 +1,22 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 // Set storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save images to the "uploads" folder
+    const baseDir = "uploads/ProfileImage";
+
+    // Determine folder based on user role
+    const subFolder = req.user && req.user.isAdmin ? "AdminImage" : "UserImage";
+    const uploadPath = `${baseDir}/${subFolder}`;
+
+    // Ensure the directory exists
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath); // Save images to respective folder
   },
   filename: (req, file, cb) => {
     cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`); // Unique file name
@@ -28,7 +40,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max file size
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
 });
 
 module.exports = upload;
