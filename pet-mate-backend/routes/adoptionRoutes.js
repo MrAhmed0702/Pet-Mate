@@ -92,4 +92,15 @@ router.put("/:id", protect, isAdmin, async (req, res) => {
   }
 });
 
+// Fetch adopted pets for the logged-in user
+router.get("/my-pets", protect, async (req, res) => {
+  try {
+    const adoptedPets = await Adoption.find({ user: req.user.id, status: "Approved" }).populate("pet");
+    res.status(200).json(adoptedPets);
+  } catch (error) {
+    console.error("Error fetching adopted pets:", error);
+    res.status(500).json({ message: "Error fetching adopted pets" });
+  }
+});
+
 module.exports = router;
