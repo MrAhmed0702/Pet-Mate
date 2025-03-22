@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UserProfile from "./pages/UserProfile";
 import HomePage from "./pages/HomePage";
 import MyPets from "./pages/MyPets";
+import Footer from "./components/Footer";
+
 
 const App = () => {
   const { user } = useSelector((state) => state.auth);
@@ -27,6 +29,7 @@ const App = () => {
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path="/my-pets" element={<MyPets />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };

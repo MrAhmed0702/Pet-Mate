@@ -28,6 +28,24 @@ const slides = [
   },
 ];
 
+const feedbacks = [
+  {
+    text: "Gratitude fills my heart as I embrace my new found wife, the gift of love I found at Pet-Mate.",
+    user: "Sanjay Kumar Bhardwaj",
+    image: "/src/assets/Feedbacks/feedback1.jpg",
+  },
+  {
+    text: "Pet-Mate gave me my long lost twin. I can’t imagine life without him! Thank you Pet-Mate!",
+    user: "Hitesh Bhakta",
+    image: "/src/assets/Feedbacks/feedback2.jpg",
+  },
+  {
+    text: "Adopting from Pet-Mate changed my life. Thank you for the joy of having Helloten!",
+    user: "Hiten Patil",
+    image: "/src/assets/Feedbacks/feedback3.jpg",
+  },
+];
+
 const HomePage = () => {
   const [pets, setPets] = useState([]);
 
@@ -101,6 +119,53 @@ const HomePage = () => {
           <Typography align="center">Loading pets...</Typography>
         )}
       </Grid>
+
+      {/* Feedback Section */}
+      <Typography variant="h4" align="center" mt={5} mb={3} fontWeight="bold" color="#0f6465">
+        What Our Adopters Say
+      </Typography>
+
+      <Swiper
+        modules={[Pagination, Autoplay]}
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 5000 }}
+        loop
+        spaceBetween={30}
+        slidesPerView={1}
+        style={{ width: "100%", paddingBottom: "40px" }}
+      >
+        {feedbacks.map((feedback, index) => (
+          <SwiperSlide key={index}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                padding: "20px",
+                boxShadow: 3,
+                borderRadius: 3,
+                maxWidth: "800px",
+                margin: "auto",
+                backgroundColor: "#fffaf0",
+              }}
+            >
+              <CardMedia
+                component="img"
+                image={feedback.image}
+                alt="User feedback"
+                sx={{ width: 180, height: 180, borderRadius: "50%", objectFit: "cover", mr: 3 }}
+              />
+              <CardContent>
+                <Typography variant="body1" fontStyle="italic">
+                  "{feedback.text}"
+                </Typography>
+                <Typography variant="h6" color="orange" fontWeight="bold" mt={1}>
+                  - {feedback.user}
+                </Typography>
+              </CardContent>
+            </Card>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </Container>
   );
 };
