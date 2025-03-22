@@ -33,11 +33,12 @@ const Footer = () => {
                             variant="h6"
                             fontWeight="bold"
                             sx={{
-                                fontFamily: "'Poppins', sans-serif", // Modern font
+                                fontFamily: "forresta personal use",
                                 letterSpacing: "1px",
+                                fontSize: "1.5rem",
                             }}
                         >
-                            Pet-Mate ❤️
+                            Pet-Mate
                         </Typography>
                         <Typography variant="body2" mt={1}>
                             Pet-Mate: Where wagging tails meet warm hearts. We’re a non-profit on a mission for the furry smiles. 🐾

@@ -43,8 +43,8 @@ const PetList = () => {
   return (
     <Box sx={styles.pageBackground}>
       <Container maxWidth="lg">
-        <Typography variant="h4" align="center" fontWeight="bold" color="#ffffff" mt={5} mb={3}>
-          Adopt a Pet
+        <Typography variant="h4" align="center" fontWeight="bold" color="#0f6465" mt={5} mb={3}>
+          ADOPT A PET
         </Typography>
         <Grid container spacing={4} justifyContent="center">
           {pets.length > 0 ? (
@@ -113,7 +113,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "linear-gradient(to right, #0f6465, #117a7a)",
+    color: "#000000",
+    // background: "linear-gradient(to right, #0f6465, #117a7a)",
   },
   card: {
     boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
