@@ -15,11 +15,11 @@ const fadeIn = keyframes`
 `;
 
 const teamMembers = [
-  { name: "Ahmed Mohammed Jayanti Mochi", role: "Founder & CTO", image: "#" },
-  { name: "Maulik JagdishBhai Shreemali", role: "Founder & CEO", image: "#" },
-  { name: "Hitesh Hari Bhakta", role: "Marketing Manager & Communication Director", image: "#" },
-  { name: "Hiten Jagdish Patil", role: "Chief Financial Officer (CFO)", image: "#" },
-  { name: "Sanjay Kumar Bhardwaj", role: "HR & Staff Director", image: "#" },
+  { name: "Ahmed Mohammed Jayanti Mochi", role: "Founder & CTO", image: "/src/assets/Our Team/Ahmed.jpeg" },
+  { name: "Maulik JagdishBhai Shreemali", role: "Founder & CEO", image: "/src/assets/Our Team/Maulik.jpg" },
+  { name: "Hitesh Hari Bhakta", role: "Marketing Manager & Communication Director", image: "/src/assets/Our Team/Popat.jpg" },
+  { name: "Hiten Jagdish Patil", role: "Chief Financial Officer (CFO)", image: "/src/assets/Our Team/Hiten.jpg" },
+  { name: "Sanjay Kumar Bhardwaj", role: "HR & Staff Director", image: "/src/assets/Our Team/Sanjay.jpg" },
 ];
 
 const AboutUs = () => {

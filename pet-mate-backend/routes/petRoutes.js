@@ -64,7 +64,7 @@ router.put("/:id", protect, isAdmin, upload.single("image"), async (req, res) =>
     if (!pet) return res.status(404).json({ message: "Pet not found" });
 
     if (req.file) {
-      image = `/uploads/${req.file.filename}`;
+      image = `/uploads/PetProfileImage/${req.file.filename}`;
     } else {
       image = pet.image;
     }
