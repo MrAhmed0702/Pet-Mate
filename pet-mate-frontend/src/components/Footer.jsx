@@ -62,7 +62,7 @@ const Footer = () => {
                         </Typography>
                         <Box mt={1}>
                             <Link
-                                href="#"
+                                href="/about"
                                 color="inherit"
                                 display="block"
                                 sx={{
@@ -77,7 +77,7 @@ const Footer = () => {
                                 About Us
                             </Link>
                             <Link
-                                href="#"
+                                href="/contact"
                                 color="inherit"
                                 display="block"
                                 sx={{
@@ -107,7 +107,7 @@ const Footer = () => {
                         </Typography>
                         <Box mt={1}>
                             <Link
-                                href="#"
+                                href="*"
                                 color="inherit"
                                 display="block"
                                 sx={{
@@ -122,7 +122,7 @@ const Footer = () => {
                                 Adopt
                             </Link>
                             <Link
-                                href="#"
+                                href="*"
                                 color="inherit"
                                 display="block"
                                 sx={{

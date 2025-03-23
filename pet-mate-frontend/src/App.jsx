@@ -12,6 +12,8 @@ import HomePage from "./pages/HomePage";
 import MyPets from "./pages/MyPets";
 import Footer from "./components/Footer";
 import { Box } from "@mui/material";
+import Contact from "./pages/Contact";
+import AboutUs from "./pages/AboutUs";
 
 const App = () => {
   const { user } = useSelector((state) => state.auth);
@@ -41,6 +43,9 @@ const App = () => {
             <Route path="/pets" element={<PetList />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/my-pets" element={<MyPets />} />
+            <Route path="*" element={<Box sx={{ textAlign: "center", py: 5 }}><h2>404 - Page Coming Soon</h2></Box>}/>
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<AboutUs />} />
           </Routes>
         </Box>
         <Footer />

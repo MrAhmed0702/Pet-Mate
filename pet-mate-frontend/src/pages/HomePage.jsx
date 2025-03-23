@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Button, Grid, Card, CardMedia, CardContent, Box } from "@mui/material";
+import { Box, Container, Typography, Button, Grid, Card, CardMedia, CardContent } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -7,25 +7,38 @@ import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { keyframes } from "@emotion/react";
+
+// Fade-in animation (consistent with other components)
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 // Slide data
 const slides = [
   {
     image: "/src/assets/Banners/banner1.jpg",
-    title: "Your Furry Friend is Waiting",
-    text: "Adopting a pet is a good deed. If not, adopt them by just donating. We will take care of them. Let your love change the world!",
+    title: "Your Furry Friend Awaits",
+    text: "Adopting a pet is a noble act. Can’t adopt? Donate to ensure they’re cared for. Your love can change the world!",
     button: "Donate Now",
   },
   {
     image: "/src/assets/Banners/banner2.jpg",
-    title: "Do Something That Matters",
-    text: "Adopt love and make a difference in a pet's life today!",
+    title: "Make a Difference Today",
+    text: "Bring home love and transform a pet’s life with Pet-Mate!",
     button: "Adopt Now",
   },
   {
     image: "/src/assets/Banners/banner3.jpg",
-    title: "Do Something That Matters",
-    text: "Adopt love and make a difference in a pet's life today!",
+    title: "Be Their Hero",
+    text: "Every pet deserves a home—help us make it happen!",
     button: "Help Now",
   },
 ];
@@ -65,68 +78,77 @@ const HomePage = () => {
   }, []);
 
   return (
-    <Box sx={{ overflow: "hidden" }}>
+    <Box sx={{ overflow: "hidden", backgroundColor: "#f5f7fa" }}>
       {/* Hero Banner (Swiper) */}
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
         pagination={{ clickable: true }}
         navigation
-        autoplay={{ delay: 5000 }}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
         loop
-        className="hero-slider"
         style={{ width: "100vw", marginLeft: "calc(-50vw + 50%)" }}
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
             <Box
               sx={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${slide.image})`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${slide.image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 height: "80vh",
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
+                alignItems: "center",
                 justifyContent: "center",
-                padding: "40px",
                 color: "white",
-                width: "100vw",
+                textAlign: "center",
                 position: "relative",
+                animation: `${fadeIn} 1s ease-in-out`,
               }}
             >
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.2 }}
+                transition={{ duration: 1, delay: 0.3 }}
               >
                 <Typography
                   variant="h2"
-                  fontWeight="bold"
-                  sx={{ fontFamily: "'Poppins', sans-serif", letterSpacing: "2px", mb: 2 }}
+                  sx={{
+                    fontFamily: "forresta personal use", // From Navbar/Footer
+                    fontWeight: "bold",
+                    letterSpacing: "2px",
+                    textShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)", // Depth like Navbar
+                    mb: 2,
+                  }}
                 >
                   {slide.title}
                 </Typography>
                 <Typography
                   variant="h5"
-                  sx={{ fontFamily: "'Poppins', sans-serif", maxWidth: "600px", mb: 3 }}
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif",
+                    maxWidth: "700px",
+                    mx: "auto",
+                    mb: 4,
+                    color: "#eeeeee",
+                  }}
                 >
                   {slide.text}
                 </Typography>
                 <Button
                   variant="contained"
                   sx={{
-                    backgroundColor: "#ffcc00",
+                    backgroundColor: "#ffcc00", // Yellow from theme
                     color: "#0f6465",
                     fontWeight: "bold",
                     fontFamily: "'Poppins', sans-serif",
-                    px: 4,
+                    px: 5,
                     py: 1.5,
                     borderRadius: "25px",
                     transition: "all 0.3s ease",
                     "&:hover": {
-                      backgroundColor: "#e6b800",
+                      backgroundColor: "#ffb300",
                       transform: "scale(1.05)",
-                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                      boxShadow: "0 6px 15px rgba(0, 0, 0, 0.3)",
                     },
                   }}
                 >
@@ -139,7 +161,7 @@ const HomePage = () => {
       </Swiper>
 
       {/* Featured Pets Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ py: 10 }}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -149,16 +171,20 @@ const HomePage = () => {
           <Typography
             variant="h4"
             align="center"
-            mb={6}
-            fontWeight="bold"
-            sx={{ fontFamily: "'Poppins', sans-serif", color: "#0f6465" }}
+            sx={{
+              fontFamily: "forresta personal use",
+              fontWeight: "bold",
+              color: "#0f6465",
+              mb: 6,
+              textShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+            }}
           >
-            Featured Pets
+            Meet Our Featured Pets
           </Typography>
           <Grid container spacing={4} justifyContent="center">
             {pets.length > 0 ? (
               pets.map((pet, index) => (
-                <Grid item xs={12} sm={4} key={pet._id}>
+                <Grid item xs={12} sm={6} md={4} key={pet._id}>
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -167,14 +193,16 @@ const HomePage = () => {
                   >
                     <Card
                       sx={{
-                        boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-                        borderRadius: "15px",
-                        transition: "all 0.3s ease",
-                        position: "relative",
+                        borderRadius: "20px",
+                        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
                         overflow: "visible",
+                        background: "linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)",
+                        transition: "all 0.3s ease",
+                        position: "relative", // Add this to make the Card a positioned ancestor
                         "&:hover": {
                           transform: "scale(1.05)",
-                          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+                          border: "2px solid #ffcc00",
                         },
                       }}
                     >
@@ -183,20 +211,21 @@ const HomePage = () => {
                         height="250"
                         image={`http://localhost:5000${pet.image}`}
                         alt={pet.name}
-                        sx={{ borderTopLeftRadius: "15px", borderTopRightRadius: "15px" }}
+                        sx={{ borderTopLeftRadius: "20px", borderTopRightRadius: "20px" }}
                       />
                       <Box
                         sx={{
                           position: "absolute",
-                          top: 10,
-                          right: 10,
+                          top: 15,
+                          right: 15,
                           backgroundColor: pet.status === "available" ? "#4caf50" : "#f44336",
                           color: "white",
                           px: 2,
                           py: 0.5,
                           borderRadius: "12px",
-                          fontSize: "0.8rem",
+                          fontSize: "0.9rem",
                           fontWeight: "bold",
+                          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
                         }}
                       >
                         {pet.status === "available" ? "Available" : "Adopted"}
@@ -204,15 +233,20 @@ const HomePage = () => {
                       <CardContent>
                         <Typography
                           variant="h5"
-                          fontWeight="bold"
-                          sx={{ fontFamily: "'Poppins', sans-serif", color: "#0f6465" }}
+                          sx={{
+                            fontFamily: "'Poppins', sans-serif",
+                            fontWeight: "bold",
+                            color: "#0f6465",
+                          }}
                         >
                           {pet.name}
                         </Typography>
                         <Typography
                           variant="body2"
-                          color="text.secondary"
-                          sx={{ fontFamily: "'Poppins', sans-serif" }}
+                          sx={{
+                            fontFamily: "'Poppins', sans-serif",
+                            color: "#666",
+                          }}
                         >
                           {pet.description}
                         </Typography>
@@ -222,7 +256,10 @@ const HomePage = () => {
                 </Grid>
               ))
             ) : (
-              <Typography align="center" sx={{ fontFamily: "'Poppins', sans-serif" }}>
+              <Typography
+                align="center"
+                sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}
+              >
                 Loading pets...
               </Typography>
             )}
@@ -233,8 +270,8 @@ const HomePage = () => {
       {/* Call to Action Section */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%)",
-          py: 8,
+          background: "linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)", // Light teal like Login/Register
+          py: 10,
           textAlign: "center",
         }}
       >
@@ -246,14 +283,25 @@ const HomePage = () => {
         >
           <Typography
             variant="h4"
-            fontWeight="bold"
-            sx={{ fontFamily: "'Poppins', sans-serif", color: "#0f6465", mb: 3 }}
+            sx={{
+              fontFamily: "forresta personal use",
+              fontWeight: "bold",
+              color: "#0f6465",
+              mb: 3,
+              textShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+            }}
           >
-            Ready to Make a Difference?
+            Ready to Change a Life?
           </Typography>
           <Typography
             variant="h6"
-            sx={{ fontFamily: "'Poppins', sans-serif", color: "#666", mb: 4, maxWidth: "600px", mx: "auto" }}
+            sx={{
+              fontFamily: "'Poppins', sans-serif",
+              color: "#666",
+              mb: 4,
+              maxWidth: "600px",
+              mx: "auto",
+            }}
           >
             Adopt a pet or donate to support our mission of spreading pawsitivity!
           </Typography>
@@ -264,14 +312,14 @@ const HomePage = () => {
               color: "#0f6465",
               fontWeight: "bold",
               fontFamily: "'Poppins', sans-serif",
-              px: 5,
+              px: 6,
               py: 1.5,
               borderRadius: "25px",
               transition: "all 0.3s ease",
               "&:hover": {
-                backgroundColor: "#e6b800",
+                backgroundColor: "#ffb300",
                 transform: "scale(1.05)",
-                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                boxShadow: "0 6px 15px rgba(0, 0, 0, 0.3)",
               },
             }}
           >
@@ -281,7 +329,7 @@ const HomePage = () => {
       </Box>
 
       {/* Feedback Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ py: 10 }}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -291,20 +339,24 @@ const HomePage = () => {
           <Typography
             variant="h4"
             align="center"
-            mb={6}
-            fontWeight="bold"
-            sx={{ fontFamily: "'Poppins', sans-serif", color: "#0f6465" }}
+            sx={{
+              fontFamily: "forresta personal use",
+              fontWeight: "bold",
+              color: "#0f6465",
+              mb: 6,
+              textShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+            }}
           >
-            What Our Adopters Say
+            Voices of Joy
           </Typography>
           <Swiper
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
-            autoplay={{ delay: 5000 }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop
             spaceBetween={30}
             slidesPerView={1}
-            style={{ width: "100%", paddingBottom: "40px" }}
+            style={{ width: "100%", paddingBottom: "50px" }}
           >
             {feedbacks.map((feedback, index) => (
               <SwiperSlide key={index}>
@@ -317,53 +369,58 @@ const HomePage = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "30px",
-                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-                      borderRadius: "15px",
-                      maxWidth: "800px",
-                      margin: "auto",
-                      backgroundColor: "white",
+                      p: 4,
+                      maxWidth: "900px",
+                      mx: "auto",
+                      borderRadius: "20px",
+                      boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
+                      background: "linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)",
                       border: "2px solid",
-                      borderImage: "linear-gradient(to right, #ffcc00, #1a8a8b) 1",
+                      borderImage: "linear-gradient(135deg, #ffcc00, #1a8a8b) 1",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        transform: "scale(1.02)",
-                        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+                        transform: "scale(1.03)",
+                        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
                       },
                     }}
                   >
                     <CardMedia
                       component="img"
                       image={feedback.image}
-                      alt="User feedback"
+                      alt={feedback.user}
                       sx={{
                         width: 150,
                         height: 150,
                         borderRadius: "50%",
-                        objectFit: "cover",
-                        mr: 3,
                         border: "3px solid #ffcc00",
+                        mr: 4,
                         transition: "all 0.3s ease",
                         "&:hover": {
-                          boxShadow: "0 0 10px rgba(255, 204, 0, 0.5)",
+                          boxShadow: "0 0 15px rgba(255, 204, 0, 0.5)",
                         },
                       }}
                     />
                     <CardContent>
                       <Typography
                         variant="body1"
-                        fontStyle="italic"
-                        sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}
+                        sx={{
+                          fontFamily: "'Poppins', sans-serif",
+                          fontStyle: "italic",
+                          color: "#666",
+                          mb: 2,
+                        }}
                       >
                         "{feedback.text}"
                       </Typography>
                       <Typography
                         variant="h6"
-                        fontWeight="bold"
-                        mt={2}
-                        sx={{ fontFamily: "'Poppins', sans-serif", color: "#ffcc00" }}
+                        sx={{
+                          fontFamily: "'Poppins', sans-serif",
+                          fontWeight: "bold",
+                          color: "#ffcc00",
+                        }}
                       >
-                        - {feedback.user}
+                        — {feedback.user}
                       </Typography>
                     </CardContent>
                   </Card>

@@ -13,6 +13,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,7 +29,7 @@ const AdminDashboard = () => {
   const [editPet, setEditPet] = useState(null);
   const [open, setOpen] = useState(false);
   const [adoptionHistory, setAdoptionHistory] = useState([]);
-
+  const [contactMessages, setContactMessages] = useState([]);
 
   useEffect(() => {
     fetchPets();
@@ -54,7 +55,7 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error fetching adoption requests", error);
     }
-  };  
+  };
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -147,7 +148,22 @@ const AdminDashboard = () => {
       alert("Error rejecting adoption");
     }
   };
-  
+
+  useEffect(() => {
+    fetchContactMessages();
+  }, []);
+
+  const fetchContactMessages = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/contact/messages", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setContactMessages(res.data);
+    } catch (error) {
+      console.error("Error fetching contact messages", error);
+    }
+  };
+
   return (
     <Container maxWidth="md">
       <Typography variant="h4">Admin Dashboard</Typography>
@@ -227,6 +243,50 @@ const AdminDashboard = () => {
           <Typography>No completed adoptions.</Typography>
         )}
       </List>
+
+      <Typography variant="h5" style={{ marginTop: "20px", fontWeight: "bold" }}>
+        Contact Messages
+      </Typography>
+
+      <List>
+        {contactMessages.length > 0 ? (
+          contactMessages.map((msg) => (
+            <React.Fragment key={msg._id}>
+              <ListItem alignItems="flex-start">
+                <ListItemText
+                  primary={
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {msg.name} ({msg.email})
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <Typography variant="body2" color="text.primary">
+                        <strong>Phone:</strong> {msg.phone}
+                      </Typography>
+                      {msg.address && (
+                        <Typography variant="body2" color="text.primary">
+                          <strong>Address:</strong> {msg.address}
+                        </Typography>
+                      )}
+                      <Typography variant="body2" style={{ marginTop: "8px" }}>
+                        {msg.message}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))
+        ) : (
+          <Typography variant="body1" color="text.secondary" style={{ marginTop: "10px" }}>
+            No messages yet.
+          </Typography>
+        )}
+      </List>
+
+
     </Container>
   );
 };

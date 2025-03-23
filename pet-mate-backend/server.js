@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const path = require("path");
+const contactRoutes = require("./routes/contactRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -50,3 +51,5 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
     res.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS"); // Allow GET requests
   },
 }));
+
+app.use("/api/contact", contactRoutes);
