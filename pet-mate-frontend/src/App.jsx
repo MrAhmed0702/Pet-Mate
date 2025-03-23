@@ -45,7 +45,7 @@ const App = () => {
             <Route path="/my-pets" element={<MyPets />} />
             <Route path="*" element={<Box sx={{ textAlign: "center", py: 5 }}><h2>404 - Page Coming Soon</h2></Box>}/>
             <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<AboutUs />} />
+            <Route path="/about" element={<AboutUs />} /> 
           </Routes>
         </Box>
         <Footer />

@@ -20,7 +20,7 @@ const Footer = () => {
             sx={{
                 background: "linear-gradient(135deg, #0f6465 0%, #1a8a8b 100%)", // Gradient background
                 color: "white",
-                mt: 5,
+                mt: 0,
                 pt: 5,
                 animation: `${fadeIn} 1s ease-in-out`, // Fade-in animation
             }}
