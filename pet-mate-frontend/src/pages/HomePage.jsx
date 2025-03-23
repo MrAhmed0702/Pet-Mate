@@ -78,7 +78,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <Box sx={{ overflow: "hidden", backgroundColor: "#f5f7fa" }}>
+    <Box sx={{ overflow: "hidden", backgroundColor: "#ffffff" }}>
       {/* Hero Banner (Swiper) */}
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
