@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -14,6 +15,8 @@ import Footer from "./components/Footer";
 import { Box } from "@mui/material";
 import Contact from "./pages/Contact";
 import AboutUs from "./pages/AboutUs";
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 const App = () => {
   const { user } = useSelector((state) => state.auth);
@@ -24,17 +27,17 @@ const App = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh", // Ensure the container takes up the full viewport height
+          minHeight: "100vh",
         }}
       >
         <Navbar />
         <Box
           component="main"
           sx={{
-            flexGrow: 1, // Main content grows to fill the remaining space
-            py: { xs: 2, sm: 3, md: 4 }, // Responsive padding for top and bottom
-            px: { xs: 1, sm: 2, md: 3 }, // Responsive padding for left and right
-            backgroundColor: "#f5f7fa", // Light background for contrast
+            flexGrow: 1,
+            py: { xs: 2, sm: 3, md: 4 },
+            px: { xs: 1, sm: 2, md: 3 },
+            backgroundColor: "#f5f7fa",
           }}
         >
           <Routes>
@@ -52,6 +55,7 @@ const App = () => {
           </Routes>
         </Box>
         <Footer />
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} /> {/* Add ToastContainer */}
       </Box>
     </Router>
   );
