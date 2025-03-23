@@ -32,6 +32,9 @@ const App = () => {
           component="main"
           sx={{
             flexGrow: 1, // Main content grows to fill the remaining space
+            py: { xs: 2, sm: 3, md: 4 }, // Responsive padding for top and bottom
+            px: { xs: 1, sm: 2, md: 3 }, // Responsive padding for left and right
+            backgroundColor: "#f5f7fa", // Light background for contrast
           }}
         >
           <Routes>
