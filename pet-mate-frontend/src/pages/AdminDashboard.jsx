@@ -19,7 +19,6 @@ import {
   ListItemButton,
   Card,
   CardContent,
-  IconButton as MuiIconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -56,7 +55,8 @@ const AdminDashboard = () => {
   const [editPet, setEditPet] = useState(null);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("Add Pet");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar toggle state (default to open)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [reasons, setReasons] = useState({}); // Store admin reasons for each request
   const token = localStorage.getItem("token");
 
   const drawerWidth = 240;
@@ -166,34 +166,50 @@ const AdminDashboard = () => {
   };
 
   const handleAcceptAdoption = async (requestId, petId) => {
+    const reason = reasons[requestId] || "";
+    if (!reason.trim()) {
+      alert("Please provide a reason for approval.");
+      return;
+    }
     try {
       await axios.put(
         `http://localhost:5000/api/adoptions/${requestId}`,
-        { status: "Approved" },
+        { status: "Approved", reason },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Adoption approved!");
       setAdoptionRequests(adoptionRequests.filter((req) => req._id !== requestId));
       setPets(pets.map((p) => (p._id === petId ? { ...p, adopted: true } : p)));
       fetchAdoptionRequests();
+      setReasons((prev) => ({ ...prev, [requestId]: "" })); // Clear reason after submission
     } catch (error) {
       alert("Error approving adoption");
     }
   };
 
   const handleRejectAdoption = async (requestId) => {
+    const reason = reasons[requestId] || "";
+    if (!reason.trim()) {
+      alert("Please provide a reason for rejection.");
+      return;
+    }
     try {
       await axios.put(
         `http://localhost:5000/api/adoptions/${requestId}`,
-        { status: "Rejected" },
+        { status: "Rejected", reason },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Adoption request rejected!");
       setAdoptionRequests(adoptionRequests.filter((req) => req._id !== requestId));
       fetchAdoptionRequests();
+      setReasons((prev) => ({ ...prev, [requestId]: "" })); // Clear reason after submission
     } catch (error) {
       alert("Error rejecting adoption");
     }
+  };
+
+  const handleReasonChange = (requestId, value) => {
+    setReasons((prev) => ({ ...prev, [requestId]: value }));
   };
 
   // Sidebar navigation items
@@ -458,29 +474,64 @@ const AdminDashboard = () => {
                         backgroundColor: "#e0f7fa",
                         transform: "scale(1.01)",
                       },
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <ListItemText
                       primary={
                         <Typography sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "bold" }}>
-                          User: {req.user?.name}
+                          User: {req.user?.name} ({req.user?.email})
                         </Typography>
                       }
                       secondary={
-                        <Typography sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}>
-                          Pet: {req.pet?.name}
-                        </Typography>
+                        <>
+                          <Typography sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}>
+                            Pet: {req.pet?.name}
+                          </Typography>
+                          <Typography sx={{ fontFamily: "'Poppins', sans-serif", color: "#666", mt: 1 }}>
+                            Adopter Name: {req.adopterDetails?.name}
+                          </Typography>
+                          <Typography sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}>
+                            Phone: {req.adopterDetails?.phone}
+                          </Typography>
+                          <Typography sx={{ fontFamily: "'Poppins', sans-serif", color: "#666" }}>
+                            Reason: {req.adopterDetails?.reason}
+                          </Typography>
+                        </>
                       }
                     />
-                    <IconButton
-                      color="success"
-                      onClick={() => handleAcceptAdoption(req._id, req.pet._id)}
-                    >
-                      <CheckIcon />
-                    </IconButton>
-                    <IconButton color="error" onClick={() => handleRejectAdoption(req._id)}>
-                      <CloseIcon />
-                    </IconButton>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2, width: "100%" }}>
+                      <TextField
+                        label="Reason for Decision"
+                        value={reasons[req._id] || ""}
+                        onChange={(e) => handleReasonChange(req._id, e.target.value)}
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "12px",
+                            "&:hover fieldset": { borderColor: "#ffcc00" },
+                            "&.Mui-focused fieldset": { borderColor: "#ffcc00" },
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "#555",
+                            "&.Mui-focused": { color: "#ffcc00" },
+                          },
+                        }}
+                      />
+                      <IconButton
+                        color="success"
+                        onClick={() => handleAcceptAdoption(req._id, req.pet._id)}
+                      >
+                        <CheckIcon />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleRejectAdoption(req._id)}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </Box>
                   </ListItem>
                 ))
               ) : (
@@ -656,15 +707,15 @@ const AdminDashboard = () => {
             background: "linear-gradient(135deg, #0f6465 0%, #1a8a8b 100%)",
             color: "white",
             animation: `${fadeIn} 0.5s ease-in-out`,
-            height: "100%", // Fit within the main content area (set by App.js)
-            position: "relative", // Stay within the flow of the parent layout
+            height: "100%",
+            position: "relative",
           },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-          <MuiIconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)} sx={{ color: "white" }}>
+          <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)} sx={{ color: "white" }}>
             {isSidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
-          </MuiIconButton>
+          </IconButton>
         </Box>
         <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }} />
         {isSidebarOpen && (
@@ -722,8 +773,8 @@ const AdminDashboard = () => {
           backgroundColor: "#ffffff",
           transition: "margin-left 0.3s ease",
           marginLeft: isSidebarOpen ? `${drawerWidth}px` : `${collapsedWidth}px`,
-          overflowY: "auto", // Allow scrolling if content overflows
-          minHeight: "100%", // Ensure it fills the available space
+          overflowY: "auto",
+          minHeight: "100%",
         }}
       >
         <Container maxWidth="md">{renderSection()}</Container>

@@ -1,47 +1,64 @@
-import { Button, Card, CardContent, CardMedia, Container, Grid, Typography, Box, Chip } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Container, Grid, Card, CardContent, CardMedia, Typography, Button, Chip, CircularProgress, Modal, TextField } from "@mui/material";
+import { fetchPets } from "../redux/slices/petSlice";
+import { requestAdoption } from "../redux/slices/adoptionSlice";
+import { toast } from "react-toastify";
+import { keyframes } from "@emotion/react";
+
+const fadeIn = keyframes`from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); }`;
 
 const PetList = () => {
-  const [pets, setPets] = useState([]);
-  const [showDetails, setShowDetails] = useState({}); // Track which pet details are shown
-  const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
+  const { pets, status, error } = useSelector((state) => state.pets);
+  const { token } = useSelector((state) => state.auth);
+  const [showDetails, setShowDetails] = useState({});
+  const [adoptModalOpen, setAdoptModalOpen] = useState(false);
+  const [selectedPetId, setSelectedPetId] = useState(null);
+  const [adoptForm, setAdoptForm] = useState({ name: "", email: "", phone: "", reason: "" });
 
   useEffect(() => {
-    const fetchPets = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/pets");
-        setPets(response.data);
-      } catch (error) {
-        console.error("Error fetching pets:", error);
-      }
-    };
-    fetchPets();
-  }, []);
+    dispatch(fetchPets());
+  }, [dispatch]);
 
-  const handleAdopt = async (petId) => {
+  const handleOpenAdoptModal = (petId) => {
     if (!token) {
-      alert("You need to be logged in to adopt a pet.");
+      toast.error("You need to be logged in to adopt a pet.");
       return;
     }
+    setSelectedPetId(petId);
+    setAdoptModalOpen(true);
+  };
 
+  const handleCloseAdoptModal = () => {
+    setAdoptModalOpen(false);
+    setSelectedPetId(null);
+    setAdoptForm({ name: "", email: "", phone: "", reason: "" });
+  };
+
+  const handleAdoptFormChange = (e) => {
+    const { name, value } = e.target;
+    setAdoptForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAdoptSubmit = async () => {
+    if (!adoptForm.name || !adoptForm.email || !adoptForm.phone || !adoptForm.reason) {
+      toast.error("Please fill in all adoption details.");
+      return;
+    }
     try {
-      await axios.post(
-        "http://localhost:5000/api/adoptions",
-        { petId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      alert("Adoption request sent successfully!");
-      setPets(pets.map(pet => pet._id === petId ? { ...pet, adopted: true } : pet));
-    } catch (error) {
-      console.error("Error sending adoption request:", error);
-      alert("Failed to send adoption request.");
+      await dispatch(requestAdoption({ petId: selectedPetId, token, ...adoptForm })).unwrap();
+      toast.success("Adoption request sent successfully!");
+      handleCloseAdoptModal();
+    } catch (err) {
+      toast.error(err.message || "Failed to send adoption request.");
     }
   };
 
   return (
     <Box sx={styles.pageBackground}>
+      <title>Adopt a Pet | Pet-Mate</title>
+      <meta name="description" content="Browse and adopt pets available at Pet-Mate." />
       <Container maxWidth="lg">
         <Typography variant="h4" align="center" fontWeight="bold" color="#0f6465" mt={5} mb={3}>
           ADOPT A PET
@@ -53,7 +70,7 @@ const PetList = () => {
                 <Card sx={styles.card}>
                   {/* Pet Image with Age Tag */}
                   <Box sx={styles.imageContainer}>
-                    <CardMedia component="img" height="250" image={`http://localhost:5000${pet.image}`} alt={pet.name} sx={styles.image} />
+                    <CardMedia component="img" height="250" image={`http://localhost:5000${pet.image}`} alt={pet.name} sx={styles.image} loading="lazy"/>
                     <Chip label={`${pet.age} ${pet.age > 1 ? "years" : "year"}`} sx={styles.ageTag} />
                   </Box>
 
@@ -73,7 +90,15 @@ const PetList = () => {
                         Adopted
                       </Typography>
                     ) : (
-                      <Button variant="contained" sx={styles.button} onClick={() => handleAdopt(pet._id)}>
+                      <Button
+                        variant="contained"
+                        sx={styles.button}
+                        onClick={() => handleOpenAdoptModal(pet._id)}
+                        aria-label={`Adopt ${pet.name}`}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") handleOpenAdoptModal(pet._id);
+                        }}
+                      >
                         Adopt
                       </Button>
                     )}
@@ -102,6 +127,19 @@ const PetList = () => {
           )}
         </Grid>
       </Container>
+
+      {/* Adoption Modal */}
+      <Modal open={adoptModalOpen} onClose={handleCloseAdoptModal} aria-labelledby="adoption-form-title">
+        <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, bgcolor: "white", borderRadius: "12px", boxShadow: 24, p: 4 }}>
+          <Typography id="adoption-form-title" variant="h6" sx={{ fontFamily: "'Poppins', sans-serif", color: "#0f6465", mb: 2 }}>Adoption Request</Typography>
+          <TextField fullWidth label="Name" name="name" value={adoptForm.name} onChange={handleAdoptFormChange} required sx={{ mb: 2 }} />
+          <TextField fullWidth label="Email" name="email" type="email" value={adoptForm.email} onChange={handleAdoptFormChange} required sx={{ mb: 2 }} />
+          <TextField fullWidth label="Phone" name="phone" value={adoptForm.phone} onChange={handleAdoptFormChange} required sx={{ mb: 2 }} />
+          <TextField fullWidth label="Reason for Adoption" name="reason" multiline rows={4} value={adoptForm.reason} onChange={handleAdoptFormChange} required sx={{ mb: 2 }} />
+          <Button variant="contained" onClick={handleAdoptSubmit} sx={{ backgroundColor: "#ffcc00", color: "#0f6465", "&:hover": { backgroundColor: "#ffb300" } }}>Submit Request</Button>
+        </Box>
+      </Modal>
+
     </Box>
   );
 };
@@ -114,7 +152,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     color: "#000000",
-    // background: "linear-gradient(to right, #0f6465, #117a7a)",
   },
   card: {
     boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",

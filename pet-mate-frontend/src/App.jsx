@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 import UserProfile from "./pages/UserProfile";
 import HomePage from "./pages/HomePage";
 import MyPets from "./pages/MyPets";
@@ -36,8 +37,6 @@ const App = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            // py: { xs: 2, sm: 3, md: 4 },
-            // px: { xs: 1, sm: 2, md: 3 },
             backgroundColor: "#f5f7fa",
           }}
         >
@@ -47,8 +46,7 @@ const App = () => {
             <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/adopt" element={<ProtectedRoute><PetList /></ProtectedRoute>} />
             <Route path="/" element={<HomePage />} />
-            <Route path="/pets" element={<PetList />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute> <AdminRoute> <AdminDashboard /> </AdminRoute> </ProtectedRoute>} />
             <Route path="/my-pets" element={<MyPets />} />
             <Route path="*" element={<Box sx={{ textAlign: "center", py: 5 }}><h2>404 - Page Coming Soon</h2></Box>}/>
             <Route path="/contact" element={<Contact />} />

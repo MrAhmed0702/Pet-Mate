@@ -3,9 +3,10 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const AdminRoute = ({ children }) => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, loading } = useSelector((state) => state.auth);
 
-  return user && user.isAdmin ? children : <Navigate to="/" />;
+  if (loading) return <div>Loading...</div>;
+  return user && user.isAdmin ? children : <Navigate to="/" state={{ error: "Admin access required" }}/>;
 };
 
 export default AdminRoute;

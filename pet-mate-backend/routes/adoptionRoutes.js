@@ -8,8 +8,12 @@ const router = express.Router();
 // Request adoption (User)
 router.post("/", protect, async (req, res) => {
   try {
-    const { petId } = req.body;
+    const { petId, name, email, phone, reason } = req.body;
     const userId = req.user.id;
+
+    if (!name || !email || !phone || !reason) {
+      return res.status(400).json({ message: "All adoption details are required" });
+    }
 
     // Check if pet exists
     const pet = await Pet.findById(petId);
@@ -23,7 +27,11 @@ router.post("/", protect, async (req, res) => {
     if (existingRequest) return res.status(400).json({ message: "You have already requested to adopt this pet" });
 
     // Create adoption request
-    const adoptionRequest = new Adoption({ user: userId, pet: petId });
+    const adoptionRequest = new Adoption({ 
+      user: userId,
+      pet: petId,
+      adopterDetails: { name, email, phone, reason },
+    });
     await adoptionRequest.save();
 
     res.status(201).json({ message: "Adoption request submitted successfully", request: adoptionRequest });
@@ -39,7 +47,6 @@ router.get("/", protect, isAdmin, async (req, res) => {
       .populate("user", "name email")
       .populate("pet", "name species")
       .lean();
-
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
@@ -52,10 +59,8 @@ router.get("/user", protect, async (req, res) => {
     const requests = await Adoption.find({ user: req.user.id })
       .populate("pet", "name species")
       .lean();
-
     const pendingRequests = requests.filter(r => r.status === "Pending");
     const history = requests.filter(r => r.status !== "Pending"); // Approved/Rejected
-
     res.json({ pendingRequests, history });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
@@ -66,11 +71,16 @@ router.get("/user", protect, async (req, res) => {
 // Approve or reject an adoption request (Admin only)
 router.put("/:id", protect, isAdmin, async (req, res) => {
   try {
-    const { status } = req.body; // Expect "Approved" or "Rejected"
+    const { status, reason } = req.body; // Expect "Approved" or "Rejected"
 
     // Validate status
     if (!["Approved", "Rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    // Validate reason for rejection/approval
+    if (!reason) {
+      return res.status(400).json({ message: "Reason for status is required" });
     }
 
     // Find adoption request
@@ -79,6 +89,7 @@ router.put("/:id", protect, isAdmin, async (req, res) => {
 
     // Update adoption request status
     adoptionRequest.status = status;
+    adoptionRequest.adminResponse = { reason, respondedAt: new Date() };
     await adoptionRequest.save();
 
     // If approved, mark the pet as adopted

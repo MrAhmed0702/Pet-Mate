@@ -442,6 +442,8 @@ const UserProfile = () => {
                         backgroundColor: "#e0f7fa",
                         transform: "scale(1.01)",
                       },
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <ListItemText
@@ -456,14 +458,35 @@ const UserProfile = () => {
                         </Typography>
                       }
                       secondary={
-                        <Typography
-                          sx={{
-                            fontFamily: "'Poppins', sans-serif",
-                            color: req.status === "Approved" ? "green" : "red",
-                          }}
-                        >
-                          Status: {req.status}
-                        </Typography>
+                        <>
+                          <Typography
+                            sx={{
+                              fontFamily: "'Poppins', sans-serif",
+                              color: req.status === "Approved" ? "green" : "red",
+                            }}
+                          >
+                            Status: {req.status}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontFamily: "'Poppins', sans-serif",
+                              color: "#666",
+                              mt: 1,
+                            }}
+                          >
+                            Admin Response: {req.adminResponse?.reason || "No reason provided"}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontFamily: "'Poppins', sans-serif",
+                              color: "#666",
+                            }}
+                          >
+                            Responded At: {req.adminResponse?.respondedAt
+                              ? new Date(req.adminResponse.respondedAt).toLocaleDateString()
+                              : "N/A"}
+                          </Typography>
+                        </>
                       }
                     />
                   </ListItem>
@@ -560,9 +583,7 @@ const UserProfile = () => {
           marginLeft: isSidebarOpen ? `${drawerWidth}px` : `${collapsedWidth}px`,
           overflowY: "auto",
           minHeight: "100%",
-          // Add smooth scroll behavior
           scrollBehavior: "smooth",
-          // Custom scrollbar styling
           "&::-webkit-scrollbar": {
             width: "8px",
           },
@@ -581,8 +602,8 @@ const UserProfile = () => {
         <Container
           maxWidth="md"
           sx={{
-            py: { xs: 3, sm: 4 }, // Increased padding for more breathing room
-            pb: { xs: 5, sm: 6 }, // Extra padding at the bottom to avoid touching the Footer
+            py: { xs: 3, sm: 4 },
+            pb: { xs: 5, sm: 6 },
           }}
         >
           {renderSection()}
